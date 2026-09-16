@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pregunta 8 - Eliminar Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        /* Estilos del Menú de Navegación */
+        nav {
+            background-color: #f4f4f4;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 14px;
+            margin-right: 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        nav a.active {
+            background-color: #cc0000;
+            color: white;
+        }
+
+        nav a.btn-nav {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        nav a.btn-nav:hover {
+            background-color: #d0d0d0;
+        }
+
+        /* Cuadro de Formulario */
+        .card-form {
+            background-color: #fafafa;
+            border: 1px solid #ccc;
+            padding: 20px;
+            max-width: 500px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            font-size: 14px;
+            width: 120px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #a00000;
+        }
+
+        .mensaje {
+            padding: 12px 15px;
+            border-radius: 4px;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        .exito {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .aviso {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Menú de Navegación -->
+    <nav>
+        <a href="consulta.html" class="btn-nav">Consultar Pedidos (Pregunta 6)</a>
+        <a href="eliminar.html" class="active">Eliminar Pedido (Pregunta 8)</a>
+    </nav>
+
+    <h2>Pregunta 8: Eliminación de Registros por ID</h2>
+
+    <?php
+    // 1. Conexión a la base de datos (puerto 3307 de XAMPP con respaldo a 3306)
+    $conn = @mysqli_connect("127.0.0.1", "root", "", "parcial_bd2", 3307);
+    if (!$conn) {
+        $conn = mysqli_connect("127.0.0.1", "root", "", "parcial_bd2", 3306);
+    }
+
+    // 2. Procesar eliminación si se recibe el parámetro 'id' mediante GET
+    if (isset($_GET['id']) && trim($_GET['id']) !== '') {
+        $id = (int)$_GET['id'];
+
+        // Sentencia SQL para eliminar el pedido
+        $sql = "DELETE FROM pedidos WHERE id = $id";
+        mysqli_query($conn, $sql);
+
+        // 3. Mostrar el estado de la operación
+        if (mysqli_affected_rows($conn) > 0) {
+            echo "<div class='mensaje exito'><strong>Estado:</strong> ¡Operación Exitosa! El pedido con ID <strong>$id</strong> fue eliminado.</div>";
+        } else {
+            echo "<div class='mensaje aviso'><strong>Estado:</strong> No se encontró ningún pedido con el ID <strong>$id</strong> (puede que ya haya sido eliminado).</div>";
+        }
+    }
+    ?>
+
+    <!-- Formulario para ingresar manualmente un ID a eliminar -->
+    <div class="card-form">
+        <form action="eliminar.html" method="GET">
+            <label for="id"><strong>Ingrese el ID del pedido a eliminar:</strong></label><br><br>
+            <input type="number" id="id" name="id" placeholder="Ej: 3" required>
+            <button type="submit">Eliminar Pedido</button>
+        </form>
+    </div>
+
+    <p><a href="consulta.html">← Volver a la lista de pedidos</a></p>
+
+</body>
+
+</html>

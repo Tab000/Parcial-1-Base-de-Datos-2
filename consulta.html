@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pregunta 6 - Consulta de Pedidos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        /* Estilos del Menú de Navegación */
+        nav {
+            background-color: #f4f4f4;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 14px;
+            margin-right: 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        nav a.active {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        nav a.btn-nav {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        nav a.btn-nav:hover {
+            background-color: #d0d0d0;
+        }
+
+        /* Estilos de la Tabla */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        th,
+        td {
+            border: 1px solid #999;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e0e0e0;
+        }
+
+        .btn-eliminar {
+            color: red;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .btn-eliminar:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Menú de Navegación -->
+    <nav>
+        <a href="consulta.html" class="active">Consultar Pedidos (Pregunta 6)</a>
+        <a href="eliminar.html" class="btn-nav">Eliminar Pedido (Pregunta 8)</a>
+    </nav>
+
+    <h2>Pregunta 6: Consulta Relacional (Clientes y Pedidos)</h2>
+
+    <?php
+    // 1. Conexión a la base de datos (puerto 3307 de XAMPP con respaldo a 3306)
+    $conn = @mysqli_connect("127.0.0.1", "root", "", "parcial_bd2", 3307);
+    if (!$conn) {
+        $conn = mysqli_connect("127.0.0.1", "root", "", "parcial_bd2", 3306);
+    }
+
+    // 2. Consulta relacional: nombre del cliente, producto y monto
+    $sql = "SELECT clientes.nombre, pedidos.producto, pedidos.monto, pedidos.id 
+            FROM pedidos 
+            INNER JOIN clientes ON pedidos.cliente_id = clientes.id";
+
+    $resultado = mysqli_query($conn, $sql);
+    ?>
+
+    <!-- 3. Tabla HTML con los resultados -->
+    <table>
+        <tr>
+            <th>Nombre del Cliente</th>
+            <th>Producto</th>
+            <th>Monto</th>
+            <th>Acción</th>
+        </tr>
+
+        <?php if (mysqli_num_rows($resultado) > 0): ?>
+        <?php while ($fila = mysqli_fetch_assoc($resultado)): ?>
+        <tr>
+            <td>
+                <?php echo $fila['nombre']; ?>
+            </td>
+            <td>
+                <?php echo $fila['producto']; ?>
+            </td>
+            <td>$
+                <?php echo $fila['monto']; ?>
+            </td>
+            <td>
+                <!-- Enlace que envía el id por método GET a eliminar.html -->
+                <a href="eliminar.html?id=<?php echo $fila['id']; ?>" class="btn-eliminar"
+                    onclick="return confirm('¿Seguro que desea eliminar este pedido?');">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+        <?php endwhile; ?>
+        <?php else: ?>
+        <tr>
+            <td colspan="4" style="text-align: center; color: #777;">No hay pedidos registrados en la base de datos.
+            </td>
+        </tr>
+        <?php endif; ?>
+    </table>
+
+</body>
+
+</html>
